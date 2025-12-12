@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { INVENTORY_STOCK, WIP_STAGES } from '@/lib/apparel-data';
-import { MaterialCard } from './components';
+import { MaterialCard } from './components/MaterialCard';
 
 type MaterialTransferProps = {
   language: 'en' | 'hi' | 'kn' | 'ta' | 'te' | 'mr' | 'gu' | 'pa';
@@ -136,6 +136,26 @@ export function MaterialTransfer({ language }: MaterialTransferProps) {
       cancel: 'रद्द करें',
       confirmTransfer: 'स्थानांतरण की पुष्टि करें',
       searchMaterial: 'सामग्री खोजें...',
+      wipStageTransfer: 'WIP स्टेज ट्रांसफर',
+      stageTransferSubtitle: 'उत्पादन चरणों के बीच सामग्री स्थानांतरित करें',
+      newStageTransfer: '+ नया स्टेज ट्रांसफर',
+      fromStage: 'स्टेज से',
+      toStage: 'स्टेज तक',
+      selectFromStage: 'स्रोत स्टेज चुनें',
+      selectToStage: 'गंतव्य स्टेज चुनें',
+      orderReference: 'ऑर्डर संदर्भ',
+      enterOrderRef: 'PO नंबर दर्ज करें',
+      productCode: 'उत्पाद कोड',
+      enterProductCode: 'उत्पाद कोड दर्ज करें (जैसे, TS-001)',
+      addMaterial: '+ सामग्री जोड़ें',
+      removeMaterial: 'हटाएं',
+      materialName: 'सामग्री का नाम',
+      enterMaterialName: 'सामग्री का नाम दर्ज करें',
+      initiateTransfer: 'ट्रांसफर शुरू करें',
+      stageTransferHistory: 'स्टेज ट्रांसफर इतिहास',
+      pending: 'लंबित',
+      inProgress: 'प्रगति में',
+      completed: 'पूर्ण',
       reasons: {
         production: 'उत्पादन आवश्यकता',
         restocking: 'पुनः भंडारण',
@@ -175,7 +195,7 @@ export function MaterialTransfer({ language }: MaterialTransferProps) {
     }
   };
 
-  const t = translations[language] || translations.en;
+  const t = translations[language as keyof typeof translations] || translations.en;
 
   // Sample transfer history
   const transferHistory = [

@@ -1,20 +1,22 @@
 import { useState } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { Dashboard } from './components/features/dashboard/Dashboard';
-import { ProductionOrders } from './components/features/orders/ProductionOrders';
-import { BOMPlanner } from './components/features/bom/BOMPlanner';
-import { WIPBoard } from './components/features/orders/WIPBoard';
-import { MaterialTransfer } from './components/features/materials/MaterialTransfer';
-import { MaterialRequest } from './components/features/materials/MaterialRequest';
-import { QCCheck } from './components/features/qc/QCCheck';
-import { Inventory } from './components/features/inventory/Inventory';
-import { GateEntry } from './components/features/gate/GateEntry';
-import { GateExit } from './components/features/gate/GateExit';
-import { ChatBot } from './components/features/chat/ChatBot';
-import { Login } from './components/features/auth/Login';
-import { UserProfile } from './components/features/profile/UserProfile';
-import type { UserData } from './components/features/profile/UserProfile';
+import {
+  Dashboard,
+  ProductionOrders,
+  BOMPlanner,
+  WIPBoard,
+  MaterialTransfer,
+  MaterialRequest,
+  QCCheck,
+  Inventory,
+  GateEntry,
+  GateExit,
+  ChatBot,
+  Login,
+  UserProfile,
+} from './components/features';
+import type { UserData } from './components/features';
 import { MobileNav } from './components/layout/MobileNav';
 import { Button } from './components/ui/button';
 import type { View, Language } from '@/types';

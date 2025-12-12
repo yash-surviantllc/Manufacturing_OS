@@ -1,4 +1,4 @@
-import { BOM_DATA, INVENTORY_STOCK, PRODUCTION_ORDERS, SKUs } from './apparel-data';
+import { INVENTORY_STOCK } from './apparel-data';
 
 // Material name aliases and mappings (expanded for multi-language)
 export const MATERIAL_ALIASES: Record<string, string> = {
@@ -136,8 +136,7 @@ export const LOCATION_ALIASES: Record<string, string> = {
   'raw material': 'RM Store A',
   'warehouse': 'RM Store A',
   'accessories': 'Accessories',
-  'packaging store': 'Packaging',
-  'store room': 'Store Room'
+  'packaging store': 'Packaging'
 };
 
 // SKU aliases (expanded)
@@ -199,7 +198,6 @@ export const URGENCY_KEYWORDS: Record<string, 'urgent' | 'normal'> = {
   'shift end': 'urgent',
   'before shift': 'urgent',
   'तुरंत': 'urgent',
-  'urgent': 'urgent',
   'जल्दी': 'urgent'
 };
 
@@ -619,7 +617,7 @@ export class MaterialRequestProcessor {
           available_in_secondary: secondaryLocations.length > 0 ? secondaryLocations : undefined
         });
         
-        if (validation.shortfall[validation.shortfall.length - 1].available_in_secondary) {
+        if (validation.shortfall && validation.shortfall[validation.shortfall.length - 1]?.available_in_secondary) {
           validation.warnings?.push(`${material.name}: Partial stock in ${stockData.location}. Check secondary locations.`);
         } else {
           validation.stock_available = false;

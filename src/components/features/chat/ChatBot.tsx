@@ -17,7 +17,8 @@ type Message = {
 
 type ActionCard = {
   type: 'bom' | 'transfer' | 'stock' | 'shortage' | 'material_request' | 'navigation';
-  data: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: Record<string, any>;
 };
 
 type ChatBotProps = {
@@ -291,8 +292,8 @@ export function ChatBot({ isOpen, onToggle, language, onNavigate }: ChatBotProps
             id: Date.now().toString(),
             type: 'bot',
             content: language === 'en'
-              ? `📊 ${poId} Status\n\nProduct: ${order.product}\nQuantity: ${order.quantity} units\nProgress: ${order.progress}%\nDue: ${order.dueDate}\nPriority: ${order.priority}\nStatus: ${order.status}`
-              : `📊 ${poId} स्थिति\n\nउत्पाद: ${order.product}\nमात्रा: ${order.quantity} यूनिट\nप्रगति: ${order.progress}%\nदेय: ${order.dueDate}\nप्राथमिकता: ${order.priority}\nस्थिति: ${order.status}`
+              ? `📊 ${poId} Status\n\nProduct: ${order.product}\nQuantity: ${order.qty} units\nProgress: ${order.progress}%\nDue: ${order.dueDate}\nStage: ${order.stage}\nStatus: ${order.status}`
+              : `📊 ${poId} स्थिति\n\nउत्पाद: ${order.product}\nमात्रा: ${order.qty} यूनिट\nप्रगति: ${order.progress}%\nदेय: ${order.dueDate}\nचरण: ${order.stage}\nस्थिति: ${order.status}`
           };
         }
       }
@@ -398,7 +399,7 @@ export function ChatBot({ isOpen, onToggle, language, onNavigate }: ChatBotProps
     handleSend();
   };
 
-  const handleConfirmAction = (message: Message) => {
+  const handleConfirmAction = (_message: Message) => {
     const confirmMessage: Message = {
       id: Date.now().toString(),
       type: 'bot',
@@ -532,7 +533,8 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
       location: 'Location',
       required: 'Required',
       shortage: 'Shortage',
-      cancel: 'Cancel'
+      cancel: 'Cancel',
+      status: 'Status'
     },
     hi: {
       confirm: 'पुष्टि करें',
@@ -551,7 +553,8 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
       location: 'स्थान',
       required: 'आवश्यक',
       shortage: 'कमी',
-      cancel: 'रद्द करें'
+      cancel: 'रद्द करें',
+      status: 'स्थिति'
     },
     kn: {
       confirm: 'ದೃಢೀಕರಿಸಿ',
@@ -570,7 +573,8 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
       location: 'ಸ್ಥಳ',
       required: 'ಅಗತ್ಯವಿದೆ',
       shortage: 'ಕೊರತೆ',
-      cancel: 'ರದ್ದುಮಾಡಿ'
+      cancel: 'ರದ್ದುಮಾಡಿ',
+      status: 'ಸ್ಥಿತಿ'
     },
     ta: {
       confirm: 'உறுதிப்படுத்தவும்',
@@ -589,7 +593,8 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
       location: 'இடம்',
       required: 'தேவை',
       shortage: 'பற்றாக்குறை',
-      cancel: 'ரத்துசெய்'
+      cancel: 'ரத்துசெய்',
+      status: 'நிலை'
     },
     te: {
       confirm: 'నిర్ధారించండి',
@@ -608,7 +613,8 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
       location: 'స్థానం',
       required: 'అవసరం',
       shortage: 'కొరత',
-      cancel: 'రద్దు చేయండి'
+      cancel: 'రద్దు చేయండి',
+      status: 'స్థితి'
     },
     mr: {
       confirm: 'पुष्टी करा',
@@ -627,7 +633,8 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
       location: 'स्थान',
       required: 'आवश्यक',
       shortage: 'कमतरता',
-      cancel: 'रद्द करा'
+      cancel: 'रद्द करा',
+      status: 'स्थिती'
     },
     gu: {
       confirm: 'પુષ્ટિ કરો',
@@ -646,7 +653,8 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
       location: 'સ્થાન',
       required: 'જરૂરી',
       shortage: 'ઉણપ',
-      cancel: 'રદ કરો'
+      cancel: 'રદ કરો',
+      status: 'સ્થિતિ'
     },
     pa: {
       confirm: 'ਪੁਸ਼ਟੀ ਕਰੋ',
@@ -665,7 +673,8 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
       location: 'ਸਥਾਨ',
       required: 'ਲੋੜੀਂਦਾ',
       shortage: 'ਕਮੀ',
-      cancel: 'ਰੱਦ ਕਰੋ'
+      cancel: 'ਰੱਦ ਕਰੋ',
+      status: 'ਸਥਿਤੀ'
     }
   };
 
@@ -787,7 +796,6 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
   }
 
   if (card.type === 'material_request') {
-    const materialRequestProcessor = new MaterialRequestProcessor(card.data);
     return (
       <Card className="mt-3 p-3 bg-white text-zinc-900">
         <div className="space-y-2">
@@ -801,7 +809,7 @@ function ActionCardComponent({ card, onConfirm, language, onNavigate }: { card: 
           </div>
           <div className="flex justify-between">
             <span className="text-zinc-600">{t.status}:</span>
-            <span className="text-emerald-600">{materialRequestProcessor.getStatus()}</span>
+            <span className="text-emerald-600">{card.data.status || 'Pending'}</span>
           </div>
         </div>
         <div className="flex gap-2 mt-3">

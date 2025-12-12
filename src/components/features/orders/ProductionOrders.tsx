@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PRODUCTION_ORDERS, SKUs } from '@/lib/apparel-data';
 import { useState } from 'react';
-import { OrderActionsDropdown } from './components';
+import { OrderActionsDropdown } from './components/OrderActionsDropdown';
 
 type ProductionOrdersProps = {
   language: 'en' | 'hi' | 'kn' | 'ta' | 'te' | 'mr' | 'gu' | 'pa';
@@ -104,7 +104,7 @@ export function ProductionOrders({ language }: ProductionOrdersProps) {
       customerName: 'Customer Name',
       enterCustomer: 'Enter customer name...',
       productionStage: 'Production Stage',
-      assignTeam: 'Assign Team',
+      assignTeamLabel: 'Assign Team',
       selectTeam: 'Select team...',
       orderNotes: 'Order Notes',
       enterNotes: 'Enter special instructions or notes...',
@@ -171,7 +171,7 @@ export function ProductionOrders({ language }: ProductionOrdersProps) {
       customerName: 'ग्राहक का नाम',
       enterCustomer: 'ग्राहक का नाम दर्ज करें...',
       productionStage: 'उत्पादन चरण',
-      assignTeam: 'टीम असाइन करें',
+      assignTeamLabel: 'टीम असाइन करें',
       selectTeam: 'टीम चुनें...',
       orderNotes: 'ऑर्डर नोट्स',
       enterNotes: 'विशेष निर्देश या नोट्स दर्ज करें...',
@@ -1753,7 +1753,7 @@ export function ProductionOrders({ language }: ProductionOrdersProps) {
                 {/* Assign Team */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">
-                    {t.assignTeam}
+                    {t.assignTeamLabel}
                   </label>
                   <select
                     value={newOrderData.assignedTeam}
@@ -1930,7 +1930,7 @@ export function ProductionOrders({ language }: ProductionOrdersProps) {
                       )}
                       {newOrderData.assignedTeam && (
                         <div className="col-span-2">
-                          <p className="text-zinc-600">{t.assignTeam}</p>
+                          <p className="text-zinc-600">{t.assignTeamLabel}</p>
                           <p className="font-medium text-emerald-900">{newOrderData.assignedTeam}</p>
                         </div>
                       )}

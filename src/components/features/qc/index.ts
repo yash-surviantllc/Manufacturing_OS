@@ -1,0 +1,1 @@
+export { QCCheck } from './QCCheck';

@@ -1,7 +1,7 @@
 import { 
   Eye, Edit, FileText, QrCode, Star, Trash2, Printer, Clock, 
   Users, MessageSquare, Send, Calendar, Package, 
-  Share2, Archive, BarChart3, XCircle 
+  Share2, Archive, BarChart3, XCircle, ClipboardList 
 } from 'lucide-react';
 
 type OrderAction = 
@@ -9,7 +9,7 @@ type OrderAction =
   | 'productionPlan' | 'assignTeam' | 'addNotes' | 'downloadBOM' 
   | 'exportExcel' | 'generateQR' | 'sendToProduction' | 'requestMaterials' 
   | 'reschedule' | 'share' | 'viewHistory' | 'archive' | 'priority' 
-  | 'cancel' | 'delete';
+  | 'cancel' | 'delete' | 'createWorkingOrder';
 
 interface OrderActionsDropdownProps {
   orderId: string;
@@ -37,6 +37,7 @@ interface OrderActionsDropdownProps {
     markPriority: string;
     cancelOrder: string;
     deleteOrder: string;
+    createWorkingOrder: string;
   };
 }
 
@@ -114,6 +115,14 @@ export function OrderActionsDropdown({
         >
           <Users className="h-4 w-4 text-zinc-500" />
           {t.assignTeam}
+        </button>
+        
+        <button
+          onClick={() => handleAction('createWorkingOrder')}
+          className="w-full px-4 py-2 text-left text-sm hover:bg-emerald-50 flex items-center gap-3 text-emerald-700"
+        >
+          <ClipboardList className="h-4 w-4 text-emerald-600" />
+          {t.createWorkingOrder}
         </button>
         
         <button

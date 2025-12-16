@@ -102,6 +102,10 @@ const MOCK_WORK_ORDERS: WorkOrder[] = [
 export function WorkingOrder({ language }: WorkingOrderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [poFilter, setPoFilter] = useState<string>('all');
+
+  // Get unique production order IDs for filter dropdown
+  const uniquePOs = [...new Set(MOCK_WORK_ORDERS.map(wo => wo.productionOrderId))];
 
   const translations = {
     en: {
@@ -407,11 +411,13 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.product.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.operation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.assignedTo.toLowerCase().includes(searchQuery.toLowerCase());
+      order.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.productionOrderId.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    const matchesPO = poFilter === 'all' || order.productionOrderId === poFilter;
     
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesPO;
   });
 
   const handleAction = (action: string, orderId: string) => {
@@ -456,10 +462,20 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
         <div className="flex gap-2">
           <select
             className="px-4 py-2 border border-zinc-200 rounded-lg bg-white text-sm"
+            value={poFilter}
+            onChange={(e) => setPoFilter(e.target.value)}
+          >
+            <option value="all">{t.productionOrder}: {t.all}</option>
+            {uniquePOs.map(po => (
+              <option key={po} value={po}>{po}</option>
+            ))}
+          </select>
+          <select
+            className="px-4 py-2 border border-zinc-200 rounded-lg bg-white text-sm"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="all">{t.all}</option>
+            <option value="all">{t.status}: {t.all}</option>
             <option value="pending">{t.pending}</option>
             <option value="in-progress">{t.inProgress}</option>
             <option value="completed">{t.completed}</option>

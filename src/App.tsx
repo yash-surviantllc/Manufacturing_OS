@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react';
 import {
   Dashboard,
   ProductionOrders,
+  WorkingOrder,
   BOMPlanner,
   WIPBoard,
   MaterialTransfer,
@@ -24,6 +25,7 @@ import type { View, Language } from '@/types';
 const viewToPath: Record<View, string> = {
   'dashboard': '/',
   'orders': '/orders',
+  'working-order': '/working-order',
   'bom': '/bom',
   'wip': '/wip',
   'transfer': '/transfer',
@@ -37,6 +39,7 @@ const viewToPath: Record<View, string> = {
 const pathToView: Record<string, View> = {
   '/': 'dashboard',
   '/orders': 'orders',
+  '/working-order': 'working-order',
   '/bom': 'bom',
   '/wip': 'wip',
   '/transfer': 'transfer',
@@ -90,6 +93,7 @@ export default function App() {
       tagline: 'Precision at every step.',
       dashboard: 'Dashboard',
       orders: 'Production Orders',
+      'working-order': 'Working Order',
       bom: 'BOM Planner',
       wip: 'WIP Board',
       transfer: 'Material Transfer',
@@ -105,6 +109,7 @@ export default function App() {
       tagline: 'प्रत्येक चरण में सटीकता।',
       dashboard: 'डैशबोर्ड',
       orders: 'उत्पादन आदेश',
+      'working-order': 'कार्य आदेश',
       bom: 'BOM योजनाकार',
       wip: 'WIP बोर्ड',
       transfer: 'सामग्री स्थानांतरण',
@@ -120,6 +125,7 @@ export default function App() {
       tagline: 'ಪ್ರತಿ ಹಂತದಲ್ಲೂ ನಿಖರತೆ.',
       dashboard: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
       orders: 'ಉತ್ಪಾದನಾ ಆದೇಶಗಳು',
+      'working-order': 'ಕೆಲಸದ ಆದೇಶ',
       bom: 'BOM ಯೋಜಕ',
       wip: 'WIP ಬೋರ್ಡ್',
       transfer: 'ವಸ್ತು ವರ್ಗಾವಣೆ',
@@ -135,6 +141,7 @@ export default function App() {
       tagline: 'ஒவ்வொரு அடியிலும் துல்லியம்.',
       dashboard: 'டாஷ்போர்டு',
       orders: 'உற்பத்தி ஆர்டர்கள்',
+      'working-order': 'வேலை ஆணை',
       bom: 'BOM திட்டமிடுபவர்',
       wip: 'WIP பலகை',
       transfer: 'பொருள் இடமாற்றம்',
@@ -150,6 +157,7 @@ export default function App() {
       tagline: 'ప్రతి దశలో ఖచ్చితత్వం.',
       dashboard: 'డాష్‌బోర్డ్',
       orders: 'ఉత్పత్తి ఆర్డర్లు',
+      'working-order': 'పని ఆదేశం',
       bom: 'BOM ప్లానర్',
       wip: 'WIP బోర్డ్',
       transfer: 'పదార్థ బదిలీ',
@@ -165,6 +173,7 @@ export default function App() {
       tagline: 'प्रत्येक टप्प्यावर अचूकता.',
       dashboard: 'डॅशबोर्ड',
       orders: 'उत्पादन ऑर्डर',
+      'working-order': 'कार्य आदेश',
       bom: 'BOM नियोजक',
       wip: 'WIP बोर्ड',
       transfer: 'साहित्य हस्तांतरण',
@@ -180,6 +189,7 @@ export default function App() {
       tagline: 'અન્ય પ્રત્યેક પાસે નિખરતા.',
       dashboard: 'ડેશબોર્ડ',
       orders: 'ઉત્પાદન ઓર્ડર',
+      'working-order': 'કામનો ઓર્ડર',
       bom: 'BOM આયોજક',
       wip: 'WIP બોર્ડ',
       transfer: 'સામગ્રી સ્થાનાંતરણ',
@@ -195,6 +205,7 @@ export default function App() {
       tagline: 'ਹਰ ਪਹਿਲਾਵੇ ਤੱਕ ਪ੍ਰਤੀਸ਼ਠਿਤਤਾ.',
       dashboard: 'ਡੈਸ਼ਬੋਰਡ',
       orders: 'ਉਤਪਾਦਨ ਆਰਡਰ',
+      'working-order': 'ਕੰਮ ਦਾ ਆਦੇਸ਼',
       bom: 'BOM ਯੋਜਨਾਕਾਰ',
       wip: 'WIP ਬੋਰਡ',
       transfer: 'ਸਮੱਗਰੀ ਟ੍ਰਾਂਸਫਰ',
@@ -246,7 +257,7 @@ export default function App() {
             </div>
           </div>
         </div>
-        <nav className="flex-1 space-y-1 px-3 py-4">
+        <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
           <NavButton active={currentView === 'dashboard'} onClick={() => setCurrentView('dashboard')}>
             {t.dashboard}
           </NavButton>
@@ -255,6 +266,9 @@ export default function App() {
           </NavButton>
           <NavButton active={currentView === 'orders'} onClick={() => setCurrentView('orders')}>
             {t.orders}
+          </NavButton>
+          <NavButton active={currentView === 'working-order'} onClick={() => setCurrentView('working-order')}>
+            {t['working-order']}
           </NavButton>
           <NavButton active={currentView === 'wip'} onClick={() => setCurrentView('wip')}>
             {t.wip}
@@ -343,7 +357,7 @@ export default function App() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-30 bg-zinc-900 text-white pt-16">
+        <div className="lg:hidden fixed inset-0 z-30 bg-zinc-900 text-white pt-16 overflow-y-auto">
           <nav className="flex flex-col p-4 space-y-2">
             <MobileNavButton
               active={currentView === 'dashboard'}
@@ -371,6 +385,15 @@ export default function App() {
               }}
             >
               {t.orders}
+            </MobileNavButton>
+            <MobileNavButton
+              active={currentView === 'working-order'}
+              onClick={() => {
+                setCurrentView('working-order');
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              {t['working-order']}
             </MobileNavButton>
             <MobileNavButton
               active={currentView === 'wip'}
@@ -490,6 +513,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Dashboard onNavigate={setCurrentView} language={language} />} />
             <Route path="/orders" element={<ProductionOrders language={language} />} />
+            <Route path="/working-order" element={<WorkingOrder language={language} />} />
             <Route path="/bom" element={<BOMPlanner language={language} />} />
             <Route path="/wip" element={<WIPBoard language={language} />} />
             <Route path="/transfer" element={<MaterialTransfer language={language} />} />

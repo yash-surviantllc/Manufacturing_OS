@@ -1,6 +1,7 @@
 export type View = 
   | 'dashboard' 
   | 'orders' 
+  | 'working-order'
   | 'bom' 
   | 'wip' 
   | 'transfer' 

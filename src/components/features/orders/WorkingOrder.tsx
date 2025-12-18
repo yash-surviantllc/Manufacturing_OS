@@ -1,4 +1,4 @@
-import { Search, Filter, Plus, Play, Pause, CheckCircle2, Clock, AlertCircle, Users, Calendar, Package } from 'lucide-react';
+import { Search, Filter, Plus, Play, Pause, CheckCircle2, Clock, AlertCircle, Calendar, Package } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,12 +9,20 @@ type WorkingOrderProps = {
   language: 'en' | 'hi' | 'kn' | 'ta' | 'te' | 'mr' | 'gu' | 'pa';
 };
 
+interface WorkOrderOperation {
+  name: string;
+  completedUnits: number;
+  status: 'pending' | 'in-progress' | 'completed' | 'on-hold';
+  assignedTo: string;
+  workstation: string;
+  targetUnits: number;
+}
+
 interface WorkOrder {
   id: string;
   productionOrderId: string;
   product: string;
-  operation: string;
-  workstation: string;
+  operations: WorkOrderOperation[];
   assignedTo: string;
   quantity: number;
   completedQty: number;
@@ -30,37 +38,114 @@ const MOCK_WORK_ORDERS: WorkOrder[] = [
     id: 'WO-0001',
     productionOrderId: 'PO-0001',
     product: 'Basic Cotton T-Shirt',
-    operation: 'Cutting',
-    workstation: 'Cutting Table A',
-    assignedTo: 'Team A',
     quantity: 500,
-    completedQty: 320,
+    completedQty: 340,
     status: 'in-progress',
     priority: 'high',
     startTime: '2024-12-16 08:00',
     estimatedEnd: '2024-12-16 14:00',
+    assignedTo: 'Team A',
+    operations: [
+      {
+        name: 'Cutting',
+        completedUnits: 120,
+        status: 'completed',
+        assignedTo: 'Team A',
+        workstation: 'Cutting Table A',
+        targetUnits: 500
+      },
+      {
+        name: 'Sewing',
+        completedUnits: 85,
+        status: 'in-progress',
+        assignedTo: 'Team B',
+        workstation: 'Sewing Line 1',
+        targetUnits: 500
+      },
+      {
+        name: 'Finishing',
+        completedUnits: 60,
+        status: 'in-progress',
+        assignedTo: 'Team C',
+        workstation: 'Finishing Station 1',
+        targetUnits: 500
+      },
+      {
+        name: 'Quality Check',
+        completedUnits: 45,
+        status: 'pending',
+        assignedTo: 'QC Team',
+        workstation: 'QC Station 1',
+        targetUnits: 500
+      },
+      {
+        name: 'Packing',
+        completedUnits: 30,
+        status: 'pending',
+        assignedTo: 'Packing Team',
+        workstation: 'Packing Station 1',
+        targetUnits: 500
+      }
+    ]
   },
   {
     id: 'WO-0002',
     productionOrderId: 'PO-0001',
     product: 'Basic Cotton T-Shirt',
-    operation: 'Sewing',
-    workstation: 'Sewing Line 1',
-    assignedTo: 'Team B',
     quantity: 500,
     completedQty: 0,
     status: 'pending',
     priority: 'high',
     startTime: '2024-12-16 14:30',
     estimatedEnd: '2024-12-17 18:00',
+    assignedTo: 'Team B',
+    operations: [
+      {
+        name: 'Cutting',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'Team A',
+        workstation: 'Cutting Table A',
+        targetUnits: 500
+      },
+      {
+        name: 'Sewing',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'Team B',
+        workstation: 'Sewing Line 1',
+        targetUnits: 500
+      },
+      {
+        name: 'Finishing',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'Team C',
+        workstation: 'Finishing Station 1',
+        targetUnits: 500
+      },
+      {
+        name: 'Quality Check',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'QC Team',
+        workstation: 'QC Station 1',
+        targetUnits: 500
+      },
+      {
+        name: 'Packing',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'Packing Team',
+        workstation: 'Packing Station 1',
+        targetUnits: 500
+      }
+    ]
   },
   {
     id: 'WO-0003',
     productionOrderId: 'PO-0002',
     product: 'Fleece Hoodie',
-    operation: 'Cutting',
-    workstation: 'Cutting Table B',
-    assignedTo: 'Team C',
     quantity: 200,
     completedQty: 200,
     status: 'completed',
@@ -68,34 +153,157 @@ const MOCK_WORK_ORDERS: WorkOrder[] = [
     startTime: '2024-12-15 08:00',
     estimatedEnd: '2024-12-15 12:00',
     actualEnd: '2024-12-15 11:45',
+    assignedTo: 'Team C',
+    operations: [
+      {
+        name: 'Cutting',
+        completedUnits: 200,
+        status: 'completed',
+        assignedTo: 'Team A',
+        workstation: 'Cutting Table B',
+        targetUnits: 200
+      },
+      {
+        name: 'Sewing',
+        completedUnits: 200,
+        status: 'completed',
+        assignedTo: 'Team B',
+        workstation: 'Sewing Line 2',
+        targetUnits: 200
+      },
+      {
+        name: 'Finishing',
+        completedUnits: 200,
+        status: 'completed',
+        assignedTo: 'Team C',
+        workstation: 'Finishing Station 2',
+        targetUnits: 200
+      },
+      {
+        name: 'Quality Check',
+        completedUnits: 200,
+        status: 'completed',
+        assignedTo: 'QC Team',
+        workstation: 'QC Station 2',
+        targetUnits: 200
+      },
+      {
+        name: 'Packing',
+        completedUnits: 200,
+        status: 'completed',
+        assignedTo: 'Packing Team',
+        workstation: 'Packing Station 2',
+        targetUnits: 200
+      }
+    ]
   },
   {
     id: 'WO-0004',
     productionOrderId: 'PO-0002',
     product: 'Fleece Hoodie',
-    operation: 'Sewing',
-    workstation: 'Sewing Line 2',
-    assignedTo: 'Team D',
     quantity: 200,
     completedQty: 85,
     status: 'in-progress',
     priority: 'normal',
     startTime: '2024-12-15 13:00',
     estimatedEnd: '2024-12-16 17:00',
+    assignedTo: 'Team D',
+    operations: [
+      {
+        name: 'Cutting',
+        completedUnits: 200,
+        status: 'completed',
+        assignedTo: 'Team A',
+        workstation: 'Cutting Table B',
+        targetUnits: 200
+      },
+      {
+        name: 'Sewing',
+        completedUnits: 85,
+        status: 'in-progress',
+        assignedTo: 'Team D',
+        workstation: 'Sewing Line 2',
+        targetUnits: 200
+      },
+      {
+        name: 'Finishing',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'Team C',
+        workstation: 'Finishing Station 2',
+        targetUnits: 200
+      },
+      {
+        name: 'Quality Check',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'QC Team',
+        workstation: 'QC Station 2',
+        targetUnits: 200
+      },
+      {
+        name: 'Packing',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'Packing Team',
+        workstation: 'Packing Station 2',
+        targetUnits: 200
+      }
+    ]
   },
   {
     id: 'WO-0005',
     productionOrderId: 'PO-0003',
     product: 'Polyester Track Pants',
-    operation: 'Quality Check',
-    workstation: 'QC Station 1',
-    assignedTo: 'QC Team',
     quantity: 150,
     completedQty: 50,
     status: 'on-hold',
     priority: 'urgent',
     startTime: '2024-12-16 09:00',
     estimatedEnd: '2024-12-16 15:00',
+    assignedTo: 'QC Team',
+    operations: [
+      {
+        name: 'Cutting',
+        completedUnits: 150,
+        status: 'completed',
+        assignedTo: 'Team A',
+        workstation: 'Cutting Table C',
+        targetUnits: 150
+      },
+      {
+        name: 'Sewing',
+        completedUnits: 150,
+        status: 'completed',
+        assignedTo: 'Team B',
+        workstation: 'Sewing Line 3',
+        targetUnits: 150
+      },
+      {
+        name: 'Finishing',
+        completedUnits: 150,
+        status: 'completed',
+        assignedTo: 'Team C',
+        workstation: 'Finishing Station 3',
+        targetUnits: 150
+      },
+      {
+        name: 'Quality Check',
+        completedUnits: 50,
+        status: 'on-hold',
+        assignedTo: 'QC Team',
+        workstation: 'QC Station 1',
+        targetUnits: 150
+      },
+      {
+        name: 'Packing',
+        completedUnits: 0,
+        status: 'pending',
+        assignedTo: 'Packing Team',
+        workstation: 'Packing Station 3',
+        targetUnits: 150
+      }
+    ]
   },
 ];
 
@@ -141,6 +349,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       estimatedEnd: 'Est. End',
       of: 'of',
       units: 'units',
+      overallProgress: 'Overall Progress',
     },
     hi: {
       title: 'कार्य आदेश',
@@ -175,6 +384,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       estimatedEnd: 'अनु. समाप्ति',
       of: 'का',
       units: 'यूनिट',
+      overallProgress: 'कुल प्रगति',
     },
     kn: {
       title: 'ಕೆಲಸದ ಆದೇಶಗಳು',
@@ -209,6 +419,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       estimatedEnd: 'ಅಂದಾಜು ಅಂತ್ಯ',
       of: 'ರಲ್ಲಿ',
       units: 'ಯೂನಿಟ್‌ಗಳು',
+      overallProgress: 'ಸಮಗ್ರ ಪ್ರಗತಿ',
     },
     ta: {
       title: 'வேலை ஆணைகள்',
@@ -243,6 +454,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       estimatedEnd: 'மதிப்பிடப்பட்ட முடிவு',
       of: 'இல்',
       units: 'அலகுகள்',
+      overallProgress: 'மொத்த முன்னேற்றம்',
     },
     te: {
       title: 'పని ఆదేశాలు',
@@ -277,6 +489,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       estimatedEnd: 'అంచనా ముగింపు',
       of: 'లో',
       units: 'యూనిట్లు',
+      overallProgress: 'సమస్త పురోగతి',
     },
     mr: {
       title: 'कार्य आदेश',
@@ -311,6 +524,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       estimatedEnd: 'अंदाजे शेवट',
       of: 'पैकी',
       units: 'युनिट्स',
+      overallProgress: 'एकूण प्रगती',
     },
     gu: {
       title: 'કામના ઓર્ડર',
@@ -345,6 +559,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       estimatedEnd: 'અંદાજિત અંત',
       of: 'માંથી',
       units: 'યુનિટ્સ',
+      overallProgress: 'કુલ પ્રગતિ',
     },
     pa: {
       title: 'ਕੰਮ ਦੇ ਆਦੇਸ਼',
@@ -379,6 +594,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
       estimatedEnd: 'ਅਨੁਮਾਨਿਤ ਅੰਤ',
       of: 'ਵਿੱਚੋਂ',
       units: 'ਯੂਨਿਟ',
+      overallProgress: 'ਕੁਲ ਤਰੱਕੀ',
     },
   };
 
@@ -410,7 +626,7 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
     const matchesSearch = 
       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.product.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.operation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.operations.some(op => op.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
       order.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.productionOrderId.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -511,49 +727,66 @@ export function WorkingOrder({ language }: WorkingOrderProps) {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <p className="text-zinc-500 flex items-center gap-1">
-                        <Package className="h-3 w-3" />
-                        {t.product}
-                      </p>
-                      <p className="font-medium">{order.product}</p>
+                  {/* Order Details */}
+                  <div className="space-y-4">
+                    {/* Product Info */}
+                    <div className="flex items-center gap-2">
+                      <Package className="h-4 w-4 text-zinc-500" />
+                      <span className="text-sm font-medium">{order.product}</span>
                     </div>
-                    <div>
-                      <p className="text-zinc-500">{t.operation}</p>
-                      <p className="font-medium">{order.operation}</p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-500">{t.workstation}</p>
-                      <p className="font-medium">{order.workstation}</p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-500 flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {t.assignedTo}
-                      </p>
-                      <p className="font-medium">{order.assignedTo}</p>
-                    </div>
-                  </div>
 
-                  {/* Progress Bar */}
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-zinc-500">{t.progress}</span>
-                      <span className="font-medium">
-                        {order.completedQty} {t.of} {order.quantity} {t.units} ({progressPercent}%)
-                      </span>
+                    {/* Operation Progress */}
+                    <div>
+                      <h4 className="text-sm font-medium text-zinc-500 mb-2">
+                        {language === 'en' ? 'Operation Progress' : 'ऑपरेशन प्रगति'}
+                      </h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                        {order.operations.map((op, idx) => (
+                          <div
+                            key={idx}
+                            className={`
+                              p-3 rounded-lg text-center border
+                              ${op.status === 'completed' ? 'bg-emerald-50 border-emerald-200' :
+                                op.status === 'in-progress' ? 'bg-blue-50 border-blue-200' :
+                                op.status === 'on-hold' ? 'bg-amber-50 border-amber-200' :
+                                'bg-zinc-50 border-zinc-200'}
+                            `}
+                          >
+                            <div className="text-sm font-medium">{op.name}</div>
+                            <div className="text-lg font-semibold my-1">{op.completedUnits} {t.units}</div>
+                            <div className="text-xs text-zinc-500">
+                              {Math.round((op.completedUnits / op.targetUnits) * 100)}% {t.of} {op.targetUnits}
+                            </div>
+                            <div className="mt-1 text-xs">
+                              <span className="text-zinc-500">{t.workstation}:</span> {op.workstation}
+                            </div>
+                            <div className="text-xs">
+                              <span className="text-zinc-500">{t.assignedTo}:</span> {op.assignedTo}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="h-2 bg-zinc-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all ${
-                          order.status === 'completed' ? 'bg-emerald-500' :
-                          order.status === 'in-progress' ? 'bg-blue-500' :
-                          order.status === 'on-hold' ? 'bg-amber-500' :
-                          'bg-zinc-400'
-                        }`}
-                        style={{ width: `${progressPercent}%` }}
-                      />
+
+                    {/* Overall Progress */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-zinc-500">{t.overallProgress}</span>
+                        <span className="font-medium">
+                          {order.completedQty} {t.of} {order.quantity} {t.units} ({progressPercent}%)
+                        </span>
+                      </div>
+                      <div className="h-2 bg-zinc-200 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all ${
+                            order.status === 'completed' ? 'bg-emerald-500' :
+                            order.status === 'in-progress' ? 'bg-blue-500' :
+                            order.status === 'on-hold' ? 'bg-amber-500' :
+                            'bg-zinc-400'
+                          }`}
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
 
